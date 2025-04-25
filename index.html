@@ -37,8 +37,8 @@
 
     .card-container {
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      flex-direction: row;
+      justify-content: center;
       gap: 40px;
       margin-top: 20px;
     }
@@ -133,7 +133,7 @@
         format: [1000, 600]
       });
 
-      // Capturar a frente
+      // Captura da frente da carteirinha
       const frenteCanvas = await html2canvas(document.getElementById('card-frente'), {
         scale: 2,
         useCORS: true
@@ -141,10 +141,10 @@
       const imgFrente = frenteCanvas.toDataURL('image/png');
       pdf.addImage(imgFrente, 'PNG', 0, 0, 1000, 600);
 
-      // Adicionar nova página para o verso
+      // Adiciona uma nova página para o verso
       pdf.addPage([1000, 600]);
 
-      // Capturar o verso
+      // Captura do verso da carteirinha
       const versoCanvas = await html2canvas(document.getElementById('card-verso'), {
         scale: 2,
         useCORS: true
@@ -152,7 +152,7 @@
       const imgVerso = versoCanvas.toDataURL('image/png');
       pdf.addImage(imgVerso, 'PNG', 0, 0, 1000, 600);
 
-      // Salvar o PDF
+      // Salva o PDF com as duas páginas (frente e verso)
       pdf.save('carteirinha_EXOL.pdf');
     }
   </script>
