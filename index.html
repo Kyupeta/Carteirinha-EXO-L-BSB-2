@@ -1,15 +1,43 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Carteirinha EXO-L</title>
   <style>
     body {
+      font-family: Arial, sans-serif;
       background: #121212;
       color: white;
-      font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
+    }
+
+    .card-container {
+      position: relative;
+      width: 500px;
+      height: 300px;
+      margin: 30px auto;
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      border-radius: 10px;
+    }
+
+    .card-front {
+      background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/FRENTE-DA-CARTEIRINHA.PNG');
+    }
+
+    .card-back {
+      background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/VERSO-DA-CARTEIRINHA.png');
+    }
+
+    .hidden {
+      display: none;
     }
 
     .input-group {
@@ -35,66 +63,40 @@
       color: white;
     }
 
-    .card-preview {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
-
-    .card {
-      position: relative;
-      width: 350px;  /* Tamanho ajustado */
-      height: 210px; /* Tamanho ajustado */
-      background-size: cover;
-      background-position: center;
-      border-radius: 10px;
-    }
-
-    .front {
-      background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/FRENTE-DA-CARTEIRINHA.PNG');
-    }
-
-    .back {
-      background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/VERSO-DA-CARTEIRINHA.png');
-    }
-
-    .id, .name, .codigo {
-      position: absolute;
-      color: white;
-      font-family: Arial, sans-serif;
-      font-weight: bold;
-    }
-
     .id {
-      top: 30px;  /* Ajuste da posição do ID */
-      left: 20px; /* Ajuste da posição do ID */
-      font-size: 22px;
+      position: absolute;
+      top: 48px;
+      left: 98px;
+      color: white;
+      font-weight: light;
+      font-size: 11px;
     }
 
     .name {
-      top: 80px;  /* Ajuste da posição do nome */
+      position: absolute;
+      top: 157px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 24px;
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+      text-align: center;
+      white-space: nowrap;
     }
 
     .codigo {
-      bottom: 30px;  /* Ajuste da posição do código */
-      left: 20px;    /* Ajuste da posição do código */
-      font-size: 22px;
+      position: absolute;
+      bottom: 49px;
+      left: 225px;
+      font-size: 12px;
       color: black;
-      font-weight: normal;
+      font-weight: light;
     }
   </style>
-
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-
   <h1>Gerador de Carteirinha EXO-L</h1>
 
   <div class="input-group">
@@ -103,17 +105,18 @@
     <button onclick="gerarCodigo()">Gerar Carteirinha</button>
   </div>
 
-  <div class="card-preview">
-    <div class="card front" id="card-frente">
+  <div class="card-container">
+    <div class="card-face card-front" id="frente">
       <div class="id" id="id-texto">04</div>
       <div class="name" id="nome-texto">Nome Sobrenome</div>
       <div class="codigo" id="codigo-texto">12345678901</div>
     </div>
-
-    <div class="card back" id="card-verso"></div>
+    <div class="card-face card-back" id="verso"></div>
   </div>
 
-  <button onclick="baixarPDF()">Baixar Frente + Verso (PDF)</button>
+  <button onclick="baixarPDF('frente')">Baixar Frente (PDF)</button>
+  <button onclick="baixarPDF('verso')">Baixar Verso (PDF)</button>
+  <button onclick="baixarPDF('ambos')">Baixar Frente + Verso (PDF)</button>
 
   <script>
     function gerarCodigo() {
@@ -126,33 +129,47 @@
       document.getElementById("codigo-texto").innerText = codigo;
     }
 
-    async function baixarPDF() {
+    async function baixarPDF(tipo) {
       const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'px',
-        format: [350, 210]  // Tamanho da página ajustado
-      });
+      const scaleFactor = 4;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [500, 310] });
 
-      // Gerar a frente da carteirinha
-      const frente = await html2canvas(document.getElementById('card-frente'), {
-        scale: 3,  // Aumento na qualidade da imagem
-        useCORS: true
-      });
-      const imgFrente = frente.toDataURL('image/png');
-      pdf.addImage(imgFrente, 'PNG', 0, 0, 350, 210);  // Adicionando frente com tamanho correto
+      const frente = document.getElementById('frente');
+      const verso = document.getElementById('verso');
 
-      // Gerar o verso da carteirinha
-      const verso = await html2canvas(document.getElementById('card-verso'), {
-        scale: 3,  // Aumento na qualidade da imagem
-        useCORS: true
-      });
-      const imgVerso = verso.toDataURL('image/png');
-      pdf.addPage([350, 210]);  // Adicionando nova página para o verso
-      pdf.addImage(imgVerso, 'PNG', 0, 0, 350, 210);  // Adicionando verso com tamanho correto
+      if (tipo === 'frente' || tipo === 'ambos') {
+        frente.classList.remove('hidden');
+        verso.classList.add('hidden');
 
-      // Gerar o arquivo PDF
-      pdf.save('carteirinha_EXOL.pdf');
+        await new Promise(resolve => setTimeout(resolve, 100)); // espera o layout se ajustar
+
+        const canvasFrente = await html2canvas(frente, { scale: scaleFactor, useCORS: true });
+        const imgFrente = canvasFrente.toDataURL("image/png");
+        const imgHeight = (canvasFrente.height / canvasFrente.width) * 500;
+
+        pdf.addImage(imgFrente, 'PNG', 0, 0, 500, imgHeight);
+
+        if (tipo === 'ambos') pdf.addPage();
+      }
+
+      if (tipo === 'verso' || tipo === 'ambos') {
+        frente.classList.add('hidden');
+        verso.classList.remove('hidden');
+
+        await new Promise(resolve => setTimeout(resolve, 100)); // espera o layout se ajustar
+
+        const canvasVerso = await html2canvas(verso, { scale: scaleFactor, useCORS: true });
+        const imgVerso = canvasVerso.toDataURL("image/png");
+        const imgHeight = (canvasVerso.height / canvasVerso.width) * 500;
+
+        pdf.addImage(imgVerso, 'PNG', 0, 0, 500, imgHeight);
+      }
+
+      pdf.save(`Carteirinha_EXOL_${tipo}.pdf`);
+
+      // Mostra novamente ambos
+      frente.classList.remove('hidden');
+      verso.classList.remove('hidden');
     }
   </script>
 </body>
