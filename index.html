@@ -69,21 +69,21 @@
     }
 
     .id {
-      top: 96px;
-      left: 196px;
+      top: 30px; /* Ajuste da posição do ID */
+      left: 20px; /* Ajuste da posição do ID */
       font-size: 22px;
     }
 
     .name {
-      top: 314px;
+      top: 80px; /* Ajuste da posição do nome */
       left: 50%;
       transform: translateX(-50%);
-      font-size: 40px;
+      font-size: 24px;
     }
 
     .codigo {
-      bottom: 98px;
-      left: 450px;
+      bottom: 30px; /* Ajuste da posição do código */
+      left: 20px; /* Ajuste da posição do código */
       font-size: 22px;
       color: black;
       font-weight: normal;
@@ -124,5 +124,36 @@
       document.getElementById("nome-texto").innerText = nome;
       document.getElementById("id-texto").innerText = idNumero;
       document.getElementById("codigo-texto").innerText = codigo;
+    }
 
-      document.getElementById("nome-texto-verso").innerText =
+    async function baixarPDF() {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [350, 210]  // Tamanho da página da carteirinha
+      });
+
+      // Gerar a frente da carteirinha
+      const frente = await html2canvas(document.getElementById('card-frente'), {
+        scale: 3,  // Aumento na qualidade da imagem
+        useCORS: true
+      });
+      const imgFrente = frente.toDataURL('image/png');
+      pdf.addImage(imgFrente, 'PNG', 0, 0, 350, 210);  // Adicionando frente com tamanho correto
+
+      // Gerar o verso da carteirinha
+      const verso = await html2canvas(document.getElementById('card-verso'), {
+        scale: 3,  // Aumento na qualidade da imagem
+        useCORS: true
+      });
+      const imgVerso = verso.toDataURL('image/png');
+      pdf.addPage([350, 210]);  // Adicionando nova página para o verso
+      pdf.addImage(imgVerso, 'PNG', 0, 0, 350, 210);  // Adicionando verso com tamanho correto
+
+      // Gerar o arquivo PDF
+      pdf.save('carteirinha_EXOL.pdf');
+    }
+  </script>
+</body>
+</html>
