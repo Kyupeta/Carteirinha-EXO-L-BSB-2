@@ -46,8 +46,8 @@
 
     .card {
       position: relative;
-      width: 350px; /* Tamanho correto da carteirinha */
-      height: 210px; /* Tamanho correto da carteirinha */
+      width: 350px;  /* Tamanho ajustado */
+      height: 210px; /* Tamanho ajustado */
       background-size: cover;
       background-position: center;
       border-radius: 10px;
@@ -69,21 +69,21 @@
     }
 
     .id {
-      top: 30px; /* Ajuste da posição do ID */
+      top: 30px;  /* Ajuste da posição do ID */
       left: 20px; /* Ajuste da posição do ID */
       font-size: 22px;
     }
 
     .name {
-      top: 80px; /* Ajuste da posição do nome */
+      top: 80px;  /* Ajuste da posição do nome */
       left: 50%;
       transform: translateX(-50%);
       font-size: 24px;
     }
 
     .codigo {
-      bottom: 30px; /* Ajuste da posição do código */
-      left: 20px; /* Ajuste da posição do código */
+      bottom: 30px;  /* Ajuste da posição do código */
+      left: 20px;    /* Ajuste da posição do código */
       font-size: 22px;
       color: black;
       font-weight: normal;
@@ -131,7 +131,7 @@
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'px',
-        format: [350, 210]  // Tamanho da página da carteirinha
+        format: [350, 210]  // Tamanho da página ajustado
       });
 
       // Gerar a frente da carteirinha
