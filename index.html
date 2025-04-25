@@ -46,8 +46,8 @@
 
     .card {
       position: relative;
-      width: 350px;  /* Tamanho para a visualização */
-      height: 210px;  /* Tamanho para a visualização */
+      width: 350px; /* Tamanho correto da carteirinha */
+      height: 210px; /* Tamanho correto da carteirinha */
       background-size: cover;
       background-position: center;
       border-radius: 10px;
@@ -139,27 +139,27 @@
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'px',
-        format: [350, 210]  // Tamanho correto para o PDF
+        format: [350, 210]  // Certificando que a dimensão da página esteja correta
       });
 
-      // Gerar a frente com qualidade
+      // Gerar a frente da carteirinha
       const frente = await html2canvas(document.getElementById('card-frente'), {
-        scale: 3,  // Aumento na qualidade da imagem
+        scale: 2,  // Aumento na qualidade da imagem
         useCORS: true
       });
       const imgFrente = frente.toDataURL('image/png');
-      pdf.addImage(imgFrente, 'PNG', 0, 0, 350, 210);  // Tamanho correto da frente
+      pdf.addImage(imgFrente, 'PNG', 0, 0, 350, 210);  // Tamanho correto da frente da imagem
 
-      // Gerar o verso com a mesma qualidade e tamanho
+      // Gerar o verso da carteirinha
       const verso = await html2canvas(document.getElementById('card-verso'), {
-        scale: 3,  // Aumento na qualidade da imagem
+        scale: 2,  // Aumento na qualidade da imagem
         useCORS: true
       });
       const imgVerso = verso.toDataURL('image/png');
-      pdf.addPage([350, 210]);  // Nova página para o verso
-      pdf.addImage(imgVerso, 'PNG', 0, 0, 350, 210);  // Tamanho correto do verso
+      pdf.addPage([350, 210]);  // Adicionando nova página para o verso
+      pdf.addImage(imgVerso, 'PNG', 0, 0, 350, 210);  // Tamanho correto do verso da imagem
 
-      // Salvar o PDF
+      // Gerar o arquivo PDF
       pdf.save('carteirinha_EXOL.pdf');
     }
   </script>
