@@ -129,29 +129,32 @@
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({
         orientation: 'landscape',
-        unit: 'mm',
-        format: [171.20, 53.98]  // Largura do cartão frente e verso (85.60mm + 85.60mm)
+        unit: 'mm',  // Mudança para mm
+        format: [85.60, 53.98]  // Tamanho do cartão (em mm)
       });
 
       // Captura da frente com maior qualidade
       const frenteCanvas = await html2canvas(document.getElementById('card-frente'), {
-        scale: 4,
+        scale: 4, // Aumenta a escala para melhorar a qualidade
         useCORS: true,
-        logging: false
+        logging: false // Desativa os logs para não sobrecarregar o processo
       });
-      const imgFrente = frenteCanvas.toDataURL('image/png', 1.0); // Usa PNG com qualidade máxima
-      pdf.addImage(imgFrente, 'PNG', 0, 0, 85.60, 53.98);  // Lado esquerdo da página
+      const imgFrente = frenteCanvas.toDataURL('image/jpeg', 1.0); // Usa JPEG com qualidade máxima
+      pdf.addImage(imgFrente, 'JPEG', 0, 0, 85.60, 53.98);  // Tamanho em mm para o PDF
+
+      // Adiciona uma nova página para o verso
+      pdf.addPage([85.60, 53.98]);
 
       // Captura do verso com maior qualidade
       const versoCanvas = await html2canvas(document.getElementById('card-verso'), {
-        scale: 4,
+        scale: 4, // Aumenta a escala para melhorar a qualidade
         useCORS: true,
-        logging: false
+        logging: false // Desativa os logs
       });
-      const imgVerso = versoCanvas.toDataURL('image/png', 1.0); // Usa PNG com qualidade máxima
-      pdf.addImage(imgVerso, 'PNG', 85.60, 0, 85.60, 53.98);  // Lado direito da página
+      const imgVerso = versoCanvas.toDataURL('image/jpeg', 1.0); // Usa JPEG com qualidade máxima
+      pdf.addImage(imgVerso, 'JPEG', 0, 0, 85.60, 53.98); // Tamanho em mm para o PDF
 
-      // Salva o PDF com ambas as imagens lado a lado
+      // Salva o PDF com as duas páginas
       pdf.save('carteirinha_EXOL.pdf');
     }
   </script>
