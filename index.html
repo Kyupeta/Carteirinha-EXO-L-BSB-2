@@ -15,7 +15,7 @@
     .card-container {
       position: relative;
       width: 500px;
-      height: 310px; /* Ajustado para o tamanho correto */
+      height: 310px; /* Manter o tamanho correto */
       margin: 30px auto;
     }
 
@@ -23,7 +23,7 @@
       position: absolute;
       width: 100%;
       height: 100%;
-      background-size: cover;
+      background-size: contain; /* Melhor ajuste para a imagem */
       background-position: center;
       border-radius: 10px;
     }
@@ -66,10 +66,10 @@
     .id {
       position: absolute;
       top: 48px;
-      left: 100px; /* Ajustado para a posição correta */
+      left: 100px;
       color: white;
       font-weight: light;
-      font-size: 16px; /* Aumentado para melhor visibilidade */
+      font-size: 16px; /* Ajustar para melhor legibilidade */
     }
 
     .name {
@@ -87,8 +87,8 @@
     .codigo {
       position: absolute;
       bottom: 49px;
-      left: 225px; /* Ajustado para alinhamento central */
-      font-size: 14px; /* Aumentado para melhor visibilidade */
+      left: 225px; 
+      font-size: 14px; /* Ajustar para a legibilidade */
       color: black;
       font-weight: light;
     }
