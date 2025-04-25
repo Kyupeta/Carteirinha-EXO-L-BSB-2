@@ -46,8 +46,8 @@
 
     .card {
       position: relative;
-      width: 350px;
-      height: 210px;
+      width: 350px; /* Tamanho correto da carteirinha */
+      height: 210px; /* Tamanho correto da carteirinha */
       background-size: cover;
       background-position: center;
       border-radius: 10px;
@@ -69,22 +69,22 @@
     }
 
     .id {
-      top: 25px;
-      left: 40px;
-      font-size: 20px;
+      top: 96px;
+      left: 196px;
+      font-size: 22px;
     }
 
     .name {
-      top: 100px;
+      top: 314px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 18px;
+      font-size: 40px;
     }
 
     .codigo {
-      bottom: 25px;
-      left: 40px;
-      font-size: 18px;
+      bottom: 98px;
+      left: 450px;
+      font-size: 22px;
       color: black;
       font-weight: normal;
     }
@@ -124,33 +124,5 @@
       document.getElementById("nome-texto").innerText = nome;
       document.getElementById("id-texto").innerText = idNumero;
       document.getElementById("codigo-texto").innerText = codigo;
-    }
 
-    async function baixarPDF() {
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'px',
-        format: [350, 210]  // Ajustado para o tamanho da carteirinha comum
-      });
-
-      const frente = await html2canvas(document.getElementById('card-frente'), {
-        scale: 3,  // Melhorando a qualidade da imagem
-        useCORS: true
-      });
-      const imgFrente = frente.toDataURL('image/png');
-      pdf.addImage(imgFrente, 'PNG', 0, 0, 350, 210);
-
-      const verso = await html2canvas(document.getElementById('card-verso'), {
-        scale: 3,  // Melhorando a qualidade da imagem
-        useCORS: true
-      });
-      const imgVerso = verso.toDataURL('image/png');
-      pdf.addPage([350, 210]);  // Nova página para o verso
-      pdf.addImage(imgVerso, 'PNG', 0, 0, 350, 210);
-
-      pdf.save('carteirinha_EXOL.pdf');
-    }
-  </script>
-</body>
-</html>
+      document.getElementById("nome-texto-verso").innerText =
