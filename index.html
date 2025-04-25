@@ -1,15 +1,70 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Carteirinha EXO-L</title>
   <style>
     body {
+      font-family: Arial, sans-serif;
       background: #121212;
       color: white;
-      font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
+    }
+
+    .card-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      position: relative;
+      width: 500px;
+      height: 300px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 10px;
+      display: block; /* Garante que as imagens não sobreponham */
+    }
+
+    .card.front {
+      background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/FRENTE-DA-CARTEIRINHA.PNG');
+    }
+
+    .card.back {
+      background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/VERSO-DA-CARTEIRINHA.png');
+    }
+
+    .id {
+      position: absolute;
+      top: 48px;
+      left: 98px;
+      color: white;
+      font-weight: lighter;
+      font-size: 11px;
+    }
+
+    .name {
+      position: absolute;
+      top: 157px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+      white-space: nowrap;
+    }
+
+    .codigo {
+      position: absolute;
+      bottom: 49px;
+      left: 225px;
+      font-size: 12px;
+      color: black;
+      font-weight: lighter;
     }
 
     .input-group {
@@ -34,68 +89,12 @@
       background-color: #00bcd4;
       color: white;
     }
-
-    .card-container {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-top: 20px;
-    }
-
-    .card {
-      position: relative;
-      width: 85mm;  /* Tamanho do cartão em mm */
-      height: 54mm; /* Tamanho do cartão em mm */
-      background-size: cover;
-      background-position: center;
-      border-radius: 10px;
-    }
-
-    .front {
-      background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/FRENTE-DA-CARTEIRINHA.PNG');
-    }
-
-    .back {
-      background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/VERSO-DA-CARTEIRINHA.png');
-    }
-
-    .id, .name, .codigo {
-      position: absolute;
-      color: white;
-      font-family: Arial, sans-serif;
-      font-weight: bold;
-    }
-
-    /* Posição do ID */
-    .id {
-      top: 10mm;
-      left: 18mm;
-      font-size: 6mm;
-    }
-
-    /* Posição do nome */
-    .name {
-      top: 14mm;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 8mm;
-    }
-
-    /* Posição do código */
-    .codigo {
-      bottom: 6mm;
-      left: 32mm;
-      font-size: 6mm;
-      color: black;
-      font-weight: normal;
-    }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-
   <h1>Gerador de Carteirinha EXO-L</h1>
 
   <div class="input-group">
@@ -110,11 +109,16 @@
       <div class="name" id="nome-texto">Nome Sobrenome</div>
       <div class="codigo" id="codigo-texto">12345678901</div>
     </div>
-
-    <div class="card back" id="card-verso"></div>
+    <div class="card back" id="card-verso">
+      <!-- O verso é apenas uma imagem de fundo, não precisa de conteúdo adicional -->
+    </div>
   </div>
 
-  <button onclick="baixarPDF()">Baixar Frente + Verso (PDF)</button>
+  <div>
+    <button onclick="baixarPDF('frente')">Baixar Frente (PDF)</button>
+    <button onclick="baixarPDF('verso')">Baixar Verso (PDF)</button>
+    <button onclick="baixarPDF('ambos')">Baixar Frente + Verso (PDF)</button>
+  </div>
 
   <script>
     function gerarCodigo() {
@@ -127,33 +131,33 @@
       document.getElementById("codigo-texto").innerText = codigo;
     }
 
-    async function baixarPDF() {
+    async function baixarPDF(tipo) {
       const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: [170, 54]  // Tamanho da página com as duas carteirinhas lado a lado
-      });
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [500, 300] });
+      const scale = 4; // Melhorar a qualidade das imagens capturadas
 
-      // Captura da frente com maior qualidade
-      const frenteCanvas = await html2canvas(document.getElementById('card-frente'), {
-        scale: 3,  // Aumenta a qualidade da imagem
-        useCORS: true,
-        logging: false
-      });
-      const imgFrente = frenteCanvas.toDataURL('image/png', 1.0); // Usa PNG com qualidade máxima
-      pdf.addImage(imgFrente, 'PNG', 0, 0, 85, 54);  // Lado esquerdo da página
+      // Define as áreas que serão capturadas
+      const frente = document.getElementById('card-frente');
+      const verso = document.getElementById('card-verso');
 
-      // Captura do verso com maior qualidade
-      const versoCanvas = await html2canvas(document.getElementById('card-verso'), {
-        scale: 3,  // Aumenta a qualidade da imagem
-        useCORS: true,
-        logging: false
-      });
-      const imgVerso = versoCanvas.toDataURL('image/png', 1.0); // Usa PNG com qualidade máxima
-      pdf.addImage(imgVerso, 'PNG', 85, 0, 85, 54);  // Lado direito da página
+      // Captura da frente
+      if (tipo === 'frente' || tipo === 'ambos') {
+        const canvasFrente = await html2canvas(frente, { scale: scale });
+        const imgDataFrente = canvasFrente.toDataURL("image/png");
+        pdf.addImage(imgDataFrente, 'PNG', 0, 0, 500, 300);
+      }
 
-      // Salva o PDF com ambas as imagens lado a lado
+      // Captura do verso
+      if (tipo === 'verso' || tipo === 'ambos') {
+        const canvasVerso = await html2canvas(verso, { scale: scale });
+        const imgDataVerso = canvasVerso.toDataURL("image/png");
+        if (tipo === 'ambos') {
+          pdf.addPage(); // Adiciona uma nova página para o verso
+        }
+        pdf.addImage(imgDataVerso, 'PNG', 0, 0, 500, 300); // Mesmo tamanho para o verso
+      }
+
+      // Salvar o PDF
       pdf.save('carteirinha_EXOL.pdf');
     }
   </script>
