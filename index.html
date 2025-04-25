@@ -142,24 +142,21 @@
         format: [350, 210]  // Tamanho padrão para carteirinha
       });
 
-      // Gerar a frente com qualidade
       const frente = await html2canvas(document.getElementById('card-frente'), {
         scale: 3,  // Aumento na qualidade da imagem
         useCORS: true
       });
       const imgFrente = frente.toDataURL('image/png');
-      pdf.addImage(imgFrente, 'PNG', 0, 0, 350, 210);  // Tamanho correto da frente
+      pdf.addImage(imgFrente, 'PNG', 0, 0, 350, 210);
 
-      // Gerar o verso com a mesma qualidade e tamanho
       const verso = await html2canvas(document.getElementById('card-verso'), {
         scale: 3,  // Aumento na qualidade da imagem
         useCORS: true
       });
       const imgVerso = verso.toDataURL('image/png');
       pdf.addPage([350, 210]);  // Nova página para o verso
-      pdf.addImage(imgVerso, 'PNG', 0, 0, 350, 210);  // Tamanho correto do verso
+      pdf.addImage(imgVerso, 'PNG', 0, 0, 350, 210);
 
-      // Salvar o PDF
       pdf.save('carteirinha_EXOL.pdf');
     }
   </script>
