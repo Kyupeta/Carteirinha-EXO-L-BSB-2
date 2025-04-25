@@ -15,52 +15,80 @@
     .card-container {
       position: relative;
       width: 500px;
-      height: 310px; /* Manter o tamanho correto */
+      height: 310px;
       margin: 30px auto;
+      perspective: 1000px;
     }
 
     .card-face {
       position: absolute;
       width: 100%;
       height: 100%;
-      background-size: contain; /* Melhor ajuste para a imagem */
+      background-size: contain;
+      background-repeat: no-repeat;
       background-position: center;
       border-radius: 10px;
+      backface-visibility: hidden;
+      transition: transform 0.6s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
 
     .card-front {
       background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/FRENTE-DA-CARTEIRINHA.PNG');
+      z-index: 2;
+      transform: rotateY(0deg);
     }
 
     .card-back {
       background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/VERSO-DA-CARTEIRINHA.png');
+      transform: rotateY(180deg);
     }
 
-    .hidden {
-      display: none;
+    .flipped .card-front {
+      transform: rotateY(180deg);
+    }
+
+    .flipped .card-back {
+      transform: rotateY(0deg);
     }
 
     .input-group {
       margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
     }
 
     input {
-      padding: 8px;
+      padding: 10px;
       font-size: 16px;
-      margin: 5px;
       border-radius: 5px;
       border: none;
+      min-width: 200px;
     }
 
     button {
       padding: 10px 20px;
       font-size: 16px;
-      margin: 5px;
       cursor: pointer;
       border: none;
       border-radius: 5px;
       background-color: #00bcd4;
       color: white;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0097a7;
+    }
+
+    .buttons-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
     }
 
     .id {
@@ -69,7 +97,7 @@
       left: 100px;
       color: white;
       font-weight: light;
-      font-size: 16px; /* Ajustar para melhor legibilidade */
+      font-size: 18px;
     }
 
     .name {
@@ -79,18 +107,46 @@
       transform: translateX(-50%);
       color: white;
       font-weight: bold;
-      font-size: 20px;
+      font-size: 22px;
       text-align: center;
-      white-space: nowrap;
+      max-width: 80%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .codigo {
       position: absolute;
       bottom: 49px;
       left: 225px; 
-      font-size: 14px; /* Ajustar para a legibilidade */
+      font-size: 16px;
       color: black;
       font-weight: light;
+    }
+
+    .flip-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 3;
+    }
+
+    @media (max-width: 600px) {
+      .card-container {
+        width: 90%;
+        height: 0;
+        padding-bottom: 56.2%; /* Proporção da carteirinha */
+      }
+      
+      .input-group, .buttons-group {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      input, button {
+        width: 100%;
+        max-width: 300px;
+      }
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -100,76 +156,144 @@
   <h1>Gerador de Carteirinha EXO-L</h1>
 
   <div class="input-group">
-    <input type="text" id="nome" placeholder="Digite o nome" />
-    <input type="number" id="id-numero" placeholder="ID (apenas número)" />
-    <button onclick="gerarCodigo()">Gerar Carteirinha</button>
+    <input type="text" id="nome" placeholder="Digite o nome" required />
+    <input type="number" id="id-numero" placeholder="ID (apenas número)" required />
+    <button onclick="gerarCarteirinha()">Gerar Carteirinha</button>
   </div>
 
-  <div class="card-container">
+  <div class="card-container" id="card-container">
     <div class="card-face card-front" id="frente">
-      <div class="id" id="id-texto">04</div>
+      <div class="id" id="id-texto">ID</div>
       <div class="name" id="nome-texto">Nome Sobrenome</div>
-      <div class="codigo" id="codigo-texto">12345678901</div>
+      <div class="codigo" id="codigo-texto">XXXXXXXXXXX</div>
+      <button class="flip-btn" onclick="flipCard()">Virar Carteirinha</button>
     </div>
-    <div class="card-face card-back" id="verso"></div>
+    <div class="card-face card-back" id="verso">
+      <button class="flip-btn" onclick="flipCard()">Virar Carteirinha</button>
+    </div>
   </div>
 
-  <button onclick="baixarPDF('frente')">Baixar Frente (PDF)</button>
-  <button onclick="baixarPDF('verso')">Baixar Verso (PDF)</button>
-  <button onclick="baixarPDF('ambos')">Baixar Frente + Verso (PDF)</button>
+  <div class="buttons-group">
+    <button onclick="baixarPDF('frente')">Baixar Frente (PDF)</button>
+    <button onclick="baixarPDF('verso')">Baixar Verso (PDF)</button>
+    <button onclick="baixarPDF('ambos')">Baixar Frente + Verso (PDF)</button>
+    <button onclick="baixarImagem('frente')">Baixar Frente (PNG)</button>
+  </div>
 
   <script>
-    function gerarCodigo() {
-      const nome = document.getElementById("nome").value || "Nome Sobrenome";
-      const idNumero = document.getElementById("id-numero").value || "00";
-      const codigo = Math.floor(10000000000 + Math.random() * 90000000000);
+    // Gerar código aleatório ao carregar a página
+    window.onload = function() {
+      gerarCodigoAleatorio();
+    };
 
-      document.getElementById("nome-texto").innerText = nome;
-      document.getElementById("id-texto").innerText = idNumero;
+    function gerarCodigoAleatorio() {
+      const codigo = Math.floor(10000000000 + Math.random() * 90000000000);
       document.getElementById("codigo-texto").innerText = codigo;
+      return codigo;
+    }
+
+    function gerarCarteirinha() {
+      const nome = document.getElementById("nome").value;
+      const idNumero = document.getElementById("id-numero").value;
+      
+      if (!nome || !idNumero) {
+        alert("Por favor, preencha todos os campos!");
+        return;
+      }
+      
+      const codigo = gerarCodigoAleatorio();
+      
+      document.getElementById("nome-texto").innerText = nome.toUpperCase();
+      document.getElementById("id-texto").innerText = idNumero.padStart(2, '0');
+      document.getElementById("codigo-texto").innerText = codigo;
+    }
+
+    function flipCard() {
+      document.getElementById('card-container').classList.toggle('flipped');
     }
 
     async function baixarPDF(tipo) {
       const { jsPDF } = window.jspdf;
-      const scaleFactor = 4;
+      const scaleFactor = 3; // Reduzido para melhor performance
       const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [500, 310] });
 
       const frente = document.getElementById('frente');
       const verso = document.getElementById('verso');
+      const container = document.getElementById('card-container');
 
+      // Remove a animação de flip durante a captura
+      container.classList.remove('flipped');
+      
       if (tipo === 'frente' || tipo === 'ambos') {
-        frente.classList.remove('hidden');
-        verso.classList.add('hidden');
+        frente.style.display = 'block';
+        verso.style.display = 'none';
 
-        await new Promise(resolve => setTimeout(resolve, 100)); // espera o layout se ajustar
+        await new Promise(resolve => setTimeout(resolve, 200));
 
-        const canvasFrente = await html2canvas(frente, { scale: scaleFactor, useCORS: true });
+        const canvasFrente = await html2canvas(frente, { 
+          scale: scaleFactor,
+          useCORS: true,
+          logging: false,
+          allowTaint: true
+        });
+        
         const imgFrente = canvasFrente.toDataURL("image/png");
-        const imgHeight = (canvasFrente.height / canvasFrente.width) * 500;
-
-        pdf.addImage(imgFrente, 'PNG', 0, 0, 500, imgHeight);
+        pdf.addImage(imgFrente, 'PNG', 0, 0, 500, 310);
 
         if (tipo === 'ambos') pdf.addPage();
       }
 
       if (tipo === 'verso' || tipo === 'ambos') {
-        frente.classList.add('hidden');
-        verso.classList.remove('hidden');
+        frente.style.display = 'none';
+        verso.style.display = 'block';
 
-        await new Promise(resolve => setTimeout(resolve, 100)); // espera o layout se ajustar
+        await new Promise(resolve => setTimeout(resolve, 200));
 
-        const canvasVerso = await html2canvas(verso, { scale: scaleFactor, useCORS: true });
+        const canvasVerso = await html2canvas(verso, { 
+          scale: scaleFactor,
+          useCORS: true,
+          logging: false,
+          allowTaint: true
+        });
+        
         const imgVerso = canvasVerso.toDataURL("image/png");
-        const imgHeight = (canvasVerso.height / canvasVerso.width) * 500;
-
-        pdf.addImage(imgVerso, 'PNG', 0, 0, 500, imgHeight);
+        pdf.addImage(imgVerso, 'PNG', 0, 0, 500, 310);
       }
 
-      pdf.save(`Carteirinha_EXOL_${tipo}.pdf`);
+      // Restaura a visualização normal
+      frente.style.display = 'block';
+      verso.style.display = 'block';
+      
+      pdf.save(`Carteirinha_EXOL_${document.getElementById("nome-texto").innerText || 'EXO-L'}.pdf`);
+    }
 
-      // Mostra novamente ambos
-      frente.classList.remove('hidden');
-      verso.classList.remove('hidden');
+    async function baixarImagem(tipo) {
+      const scaleFactor = 2;
+      let elemento;
+      
+      if (tipo === 'frente') {
+        elemento = document.getElementById('frente');
+      } else {
+        elemento = document.getElementById('verso');
+      }
+      
+      // Esconde o botão de flip temporariamente
+      const flipBtns = elemento.querySelectorAll('.flip-btn');
+      flipBtns.forEach(btn => btn.style.display = 'none');
+      
+      const canvas = await html2canvas(elemento, { 
+        scale: scaleFactor,
+        useCORS: true,
+        logging: false
+      });
+      
+      // Restaura o botão de flip
+      flipBtns.forEach(btn => btn.style.display = 'block');
+      
+      const link = document.createElement('a');
+      link.download = `Carteirinha_EXOL_${tipo}_${document.getElementById("nome-texto").innerText || 'EXO-L'}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
     }
   </script>
 </body>
