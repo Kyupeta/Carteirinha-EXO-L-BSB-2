@@ -140,14 +140,12 @@
       const frente = document.getElementById('card-frente');
       const verso = document.getElementById('card-verso');
 
-      // Captura da frente
       if (tipo === 'frente' || tipo === 'ambos') {
         const canvasFrente = await html2canvas(frente, { scale: scale });
         const imgDataFrente = canvasFrente.toDataURL("image/png");
         pdf.addImage(imgDataFrente, 'PNG', 0, 0, 500, 300);
       }
 
-      // Captura do verso
       if (tipo === 'verso' || tipo === 'ambos') {
         const canvasVerso = await html2canvas(verso, { scale: scale });
         const imgDataVerso = canvasVerso.toDataURL("image/png");
@@ -157,7 +155,6 @@
         pdf.addImage(imgDataVerso, 'PNG', 0, 0, 500, 300); // Mesmo tamanho para o verso
       }
 
-      // Salvar o PDF
       pdf.save('carteirinha_EXOL.pdf');
     }
   </script>
