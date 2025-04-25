@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Carteirinha EXO-L</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .flip-card {
+      background-color: transparent;
+      width: 500px;
+      height: 300px;
+      perspective: 1000px;
+      margin: 30px auto;
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      background-size: cover;
+      background-position: center;
+      border-radius: 10px;
+    }
+
+    /* Links diretos para as imagens no GitHub */
+    .card-front {
+      background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/FRENTE-DA-CARTEIRINHA.PNG');
+    }
+
+    .card-back {
+      background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/VERSO-DA-CARTEIRINHA.png');
+      transform: rotateY(180deg);
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 8px;
+      font-size: 16px;
+      margin: 5px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #00bcd4;
+      color: white;
+    }
+
+    .id {
+      position: absolute;
+      top: 48px;
+      left: 98px;
+      color: white;
+      font-weight: light;
+      font-size: 11px;
+    }
+
+    .name {
+      position: absolute;
+      top: 157px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .codigo {
+      position: absolute;
+      bottom: 49px;
+      left: 225px;
+      font-size: 12px;
+      color: black;
+      font-weight: light;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gerador de Carteirinha EXO-L</h1>
+
+  <div class="input-group">
+    <input type="text" id="nome" placeholder="Digite o nome" />
+    <input type="number" id="id-numero" placeholder="ID (apenas número)" />
+    <button onclick="gerarCodigo()">Gerar Carteirinha</button>
+  </div>
+
+  <div class="flip-card" id="card">
+    <div class="flip-card-inner">
+      <div class="card-face card-front">
+        <div class="id" id="id-texto">04</div>
+        <div class="name" id="nome-texto">Nome Sobrenome</div>
+        <div class="codigo" id="codigo-texto">12345678901</div>
+      </div>
+      <div class="card-face card-back"></div>
+    </div>
+  </div>
+
+  <button onclick="baixarImagem()">Baixar Frente + Verso</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    function gerarCodigo() {
+      const nome = document.getElementById("nome").value || "Nome Sobrenome";
+      const idNumero = document.getElementById("id-numero").value || "00";
+      const codigo = Math.floor(10000000000 + Math.random() * 90000000000);
+
+      // Atualiza o conteúdo na frente da carteirinha
+      document.getElementById("nome-texto").innerText = nome;
+      document.getElementById("id-texto").innerText = idNumero;
+      document.getElementById("codigo-texto").innerText = codigo;
+    }
+
+    function baixarImagem() {
+      const cardElement = document.querySelector('.flip-card');
+      
+      // Usando html2canvas para capturar a imagem da carta
+      html2canvas(cardElement, {
+        logging: true,
+        backgroundColor: "#121212",
+        useCORS: true
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'carteirinha_EXOL.png'; // Nome do arquivo
+        link.href = canvas.toDataURL("image/png"); // Cria o arquivo para download
+        link.click(); // Dispara o clique para o download
+      }).catch(error => {
+        console.error("Erro ao gerar a imagem:", error);
+      });
+    }
+  </script>
+</body>
+</html>
