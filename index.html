@@ -46,8 +46,8 @@
 
     .card {
       position: relative;
-      width: 350px;
-      height: 210px;
+      width: 350px;  /* Tamanho para a visualização */
+      height: 210px;  /* Tamanho para a visualização */
       background-size: cover;
       background-position: center;
       border-radius: 10px;
@@ -139,10 +139,10 @@
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'px',
-        format: [350, 210]  // Tamanho padrão para carteirinha
+        format: [350, 210]  // Tamanho correto para o PDF
       });
 
-      // Gerar a frente com qualidadea
+      // Gerar a frente com qualidade
       const frente = await html2canvas(document.getElementById('card-frente'), {
         scale: 3,  // Aumento na qualidade da imagem
         useCORS: true
