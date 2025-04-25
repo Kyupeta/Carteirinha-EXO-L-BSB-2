@@ -35,13 +35,12 @@
       color: white;
     }
 
-    .card-preview {
+    .card-container {
       display: flex;
-      flex-direction: row;
-      justify-content: center;
-      gap: 20px;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
       margin-top: 20px;
-      flex-wrap: wrap;
     }
 
     .card {
@@ -103,7 +102,7 @@
     <button onclick="gerarCodigo()">Gerar Carteirinha</button>
   </div>
 
-  <div class="card-preview">
+  <div class="card-container">
     <div class="card front" id="card-frente">
       <div class="id" id="id-texto">04</div>
       <div class="name" id="nome-texto">Nome Sobrenome</div>
@@ -134,19 +133,26 @@
         format: [1000, 600]
       });
 
-      const frente = await html2canvas(document.getElementById('card-frente'), {
+      // Capturar a frente
+      const frenteCanvas = await html2canvas(document.getElementById('card-frente'), {
         scale: 2,
         useCORS: true
       });
-      pdf.addImage(frente.toDataURL('image/png'), 'PNG', 0, 0, 1000, 600);
+      const imgFrente = frenteCanvas.toDataURL('image/png');
+      pdf.addImage(imgFrente, 'PNG', 0, 0, 1000, 600);
 
-      const verso = await html2canvas(document.getElementById('card-verso'), {
-        scale: 2,
-        useCORS: true
-      });
+      // Adicionar nova página para o verso
       pdf.addPage([1000, 600]);
-      pdf.addImage(verso.toDataURL('image/png'), 'PNG', 0, 0, 1000, 600);
 
+      // Capturar o verso
+      const versoCanvas = await html2canvas(document.getElementById('card-verso'), {
+        scale: 2,
+        useCORS: true
+      });
+      const imgVerso = versoCanvas.toDataURL('image/png');
+      pdf.addImage(imgVerso, 'PNG', 0, 0, 1000, 600);
+
+      // Salvar o PDF
       pdf.save('carteirinha_EXOL.pdf');
     }
   </script>
