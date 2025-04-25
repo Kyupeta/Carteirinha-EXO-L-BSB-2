@@ -37,7 +37,6 @@
 
     .card-container {
       display: flex;
-      flex-direction: row;
       justify-content: center;
       gap: 40px;
       margin-top: 20px;
@@ -45,8 +44,8 @@
 
     .card {
       position: relative;
-      width: 85.60mm; /* Tamanho do cartão em mm */
-      height: 53.98mm; /* Tamanho do cartão em mm */
+      width: 85mm;  /* Tamanho do cartão em mm */
+      height: 54mm; /* Tamanho do cartão em mm */
       background-size: cover;
       background-position: center;
       border-radius: 10px;
@@ -68,22 +67,22 @@
     }
 
     .id {
-      top: 96px;
-      left: 196px;
-      font-size: 22px;
+      top: 18mm;  /* Ajustado para a nova escala */
+      left: 28mm;  /* Ajustado para a nova escala */
+      font-size: 6mm;
     }
 
     .name {
-      top: 314px;
+      top: 22mm;  /* Ajustado para a nova escala */
       left: 50%;
       transform: translateX(-50%);
-      font-size: 40px;
+      font-size: 9mm;
     }
 
     .codigo {
-      bottom: 98px;
-      left: 450px;
-      font-size: 22px;
+      bottom: 8mm;
+      left: 35mm; /* Ajustado para a nova escala */
+      font-size: 6mm;
       color: black;
       font-weight: normal;
     }
@@ -104,59 +103,4 @@
 
   <div class="card-container">
     <div class="card front" id="card-frente">
-      <div class="id" id="id-texto">04</div>
-      <div class="name" id="nome-texto">Nome Sobrenome</div>
-      <div class="codigo" id="codigo-texto">12345678901</div>
-    </div>
-
-    <div class="card back" id="card-verso"></div>
-  </div>
-
-  <button onclick="baixarPDF()">Baixar Frente + Verso (PDF)</button>
-
-  <script>
-    function gerarCodigo() {
-      const nome = document.getElementById("nome").value || "Nome Sobrenome";
-      const idNumero = document.getElementById("id-numero").value || "00";
-      const codigo = Math.floor(10000000000 + Math.random() * 90000000000);
-
-      document.getElementById("nome-texto").innerText = nome;
-      document.getElementById("id-texto").innerText = idNumero;
-      document.getElementById("codigo-texto").innerText = codigo;
-    }
-
-    async function baixarPDF() {
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',  // Mudança para mm
-        format: [85.60, 53.98]  // Tamanho do cartão (em mm)
-      });
-
-      // Captura da frente com maior qualidade
-      const frenteCanvas = await html2canvas(document.getElementById('card-frente'), {
-        scale: 4, // Aumenta a escala para melhorar a qualidade
-        useCORS: true,
-        logging: false // Desativa os logs para não sobrecarregar o processo
-      });
-      const imgFrente = frenteCanvas.toDataURL('image/jpeg', 1.0); // Usa JPEG com qualidade máxima
-      pdf.addImage(imgFrente, 'JPEG', 0, 0, 85.60, 53.98);  // Tamanho em mm para o PDF
-
-      // Adiciona uma nova página para o verso
-      pdf.addPage([85.60, 53.98]);
-
-      // Captura do verso com maior qualidade
-      const versoCanvas = await html2canvas(document.getElementById('card-verso'), {
-        scale: 4, // Aumenta a escala para melhorar a qualidade
-        useCORS: true,
-        logging: false // Desativa os logs
-      });
-      const imgVerso = versoCanvas.toDataURL('image/jpeg', 1.0); // Usa JPEG com qualidade máxima
-      pdf.addImage(imgVerso, 'JPEG', 0, 0, 85.60, 53.98); // Tamanho em mm para o PDF
-
-      // Salva o PDF com as duas páginas
-      pdf.save('carteirinha_EXOL.pdf');
-    }
-  </script>
-</body>
-</html>
+      <div class="id"
