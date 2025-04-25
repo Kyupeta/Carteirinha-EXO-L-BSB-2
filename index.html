@@ -130,27 +130,27 @@
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'px',
-        format: [1000, 600]
+        format: [1000, 600] // Define as dimensões exatas da página
       });
 
-      // Captura da frente da carteirinha
+      // Captura da frente da carteirinha com tamanho fixo
       const frenteCanvas = await html2canvas(document.getElementById('card-frente'), {
         scale: 2,
         useCORS: true
       });
       const imgFrente = frenteCanvas.toDataURL('image/png');
-      pdf.addImage(imgFrente, 'PNG', 0, 0, 1000, 600);
+      pdf.addImage(imgFrente, 'PNG', 0, 0, 1000, 600); // Define as dimensões para garantir que a imagem tenha o mesmo tamanho
 
       // Adiciona uma nova página para o verso
       pdf.addPage([1000, 600]);
 
-      // Captura do verso da carteirinha
+      // Captura do verso da carteirinha com tamanho fixo
       const versoCanvas = await html2canvas(document.getElementById('card-verso'), {
         scale: 2,
         useCORS: true
       });
       const imgVerso = versoCanvas.toDataURL('image/png');
-      pdf.addImage(imgVerso, 'PNG', 0, 0, 1000, 600);
+      pdf.addImage(imgVerso, 'PNG', 0, 0, 1000, 600); // Mesma definição de tamanho para a segunda página
 
       // Salva o PDF com as duas páginas (frente e verso)
       pdf.save('carteirinha_EXOL.pdf');
