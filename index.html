@@ -138,16 +138,14 @@
         scale: 2,
         useCORS: true
       });
-      const imgFrente = frente.toDataURL('image/png');
-      pdf.addImage(imgFrente, 'PNG', 0, 0, 1000, 600);
+      pdf.addImage(frente.toDataURL('image/png'), 'PNG', 0, 0, 1000, 600);
 
       const verso = await html2canvas(document.getElementById('card-verso'), {
         scale: 2,
         useCORS: true
       });
-      const imgVerso = verso.toDataURL('image/png');
       pdf.addPage([1000, 600]);
-      pdf.addImage(imgVerso, 'PNG', 0, 0, 1000, 600);
+      pdf.addImage(verso.toDataURL('image/png'), 'PNG', 0, 0, 1000, 600);
 
       pdf.save('carteirinha_EXOL.pdf');
     }
