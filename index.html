@@ -45,11 +45,11 @@
 
     .card {
       position: relative;
-      width: 1000px;
-      height: 600px;
+      width: 85.60mm; /* Tamanho do cartão em mm */
+      height: 53.98mm; /* Tamanho do cartão em mm */
       background-size: cover;
       background-position: center;
-      border-radius: 20px;
+      border-radius: 10px;
     }
 
     .front {
@@ -129,30 +129,32 @@
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({
         orientation: 'landscape',
-        unit: 'px',
-        format: [1000, 600] // Define as dimensões exatas da página
+        unit: 'mm',  // Mudança para mm
+        format: [85.60, 53.98]  // Tamanho do cartão (em mm)
       });
 
-      // Captura da frente da carteirinha com tamanho fixo
+      // Captura da frente com maior qualidade
       const frenteCanvas = await html2canvas(document.getElementById('card-frente'), {
-        scale: 2,
-        useCORS: true
+        scale: 4, // Aumenta a escala para melhorar a qualidade
+        useCORS: true,
+        logging: false // Desativa os logs para não sobrecarregar o processo
       });
-      const imgFrente = frenteCanvas.toDataURL('image/png');
-      pdf.addImage(imgFrente, 'PNG', 0, 0, 1000, 600); // Define as dimensões para garantir que a imagem tenha o mesmo tamanho
+      const imgFrente = frenteCanvas.toDataURL('image/jpeg', 1.0); // Usa JPEG com qualidade máxima
+      pdf.addImage(imgFrente, 'JPEG', 0, 0, 85.60, 53.98);  // Tamanho em mm para o PDF
 
       // Adiciona uma nova página para o verso
-      pdf.addPage([1000, 600]);
+      pdf.addPage([85.60, 53.98]);
 
-      // Captura do verso da carteirinha com tamanho fixo
+      // Captura do verso com maior qualidade
       const versoCanvas = await html2canvas(document.getElementById('card-verso'), {
-        scale: 2,
-        useCORS: true
+        scale: 4, // Aumenta a escala para melhorar a qualidade
+        useCORS: true,
+        logging: false // Desativa os logs
       });
-      const imgVerso = versoCanvas.toDataURL('image/png');
-      pdf.addImage(imgVerso, 'PNG', 0, 0, 1000, 600); // Mesma definição de tamanho para a segunda página
+      const imgVerso = versoCanvas.toDataURL('image/jpeg', 1.0); // Usa JPEG com qualidade máxima
+      pdf.addImage(imgVerso, 'JPEG', 0, 0, 85.60, 53.98); // Tamanho em mm para o PDF
 
-      // Salva o PDF com as duas páginas (frente e verso)
+      // Salva o PDF com as duas páginas
       pdf.save('carteirinha_EXOL.pdf');
     }
   </script>
