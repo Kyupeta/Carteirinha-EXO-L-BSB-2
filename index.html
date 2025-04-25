@@ -12,45 +12,59 @@
       padding: 20px;
     }
 
-    .flip-card {
-      background-color: transparent;
+    .card-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      position: relative;
       width: 500px;
       height: 300px;
-      perspective: 1000px;
-      margin: 30px auto;
-    }
-
-    .flip-card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      transition: transform 0.8s;
-      transform-style: preserve-3d;
-    }
-
-    .flip-card:hover .flip-card-inner {
-      transform: rotateY(180deg);
-    }
-
-    .card-face {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
       background-size: cover;
       background-position: center;
       border-radius: 10px;
+      display: block; /* Garante que as imagens não sobreponham */
     }
 
-    /* Links diretos para as imagens no GitHub */
-    .card-front {
+    .card.front {
       background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/FRENTE-DA-CARTEIRINHA.PNG');
     }
 
-    .card-back {
+    .card.back {
       background-image: url('https://raw.githubusercontent.com/Kyupeta/Carteirinha-EXO-L/main/images/VERSO-DA-CARTEIRINHA.png');
-      transform: rotateY(180deg);
+    }
+
+    .id {
+      position: absolute;
+      top: 48px;
+      left: 98px;
+      color: white;
+      font-weight: lighter;
+      font-size: 11px;
+    }
+
+    .name {
+      position: absolute;
+      top: 157px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+      white-space: nowrap;
+    }
+
+    .codigo {
+      position: absolute;
+      bottom: 49px;
+      left: 225px;
+      font-size: 12px;
+      color: black;
+      font-weight: lighter;
     }
 
     .input-group {
@@ -68,44 +82,17 @@
     button {
       padding: 10px 20px;
       font-size: 16px;
-      margin-top: 10px;
+      margin: 5px;
       cursor: pointer;
       border: none;
       border-radius: 5px;
       background-color: #00bcd4;
       color: white;
     }
-
-    .id {
-      position: absolute;
-      top: 48px;
-      left: 98px;
-      color: white;
-      font-weight: light;
-      font-size: 11px;
-    }
-
-    .name {
-      position: absolute;
-      top: 157px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: white;
-      font-weight: bold;
-      font-size: 20px;
-      text-align: center;
-      white-space: nowrap;
-    }
-
-    .codigo {
-      position: absolute;
-      bottom: 49px;
-      left: 225px;
-      font-size: 12px;
-      color: black;
-      font-weight: light;
-    }
   </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
   <h1>Gerador de Carteirinha EXO-L</h1>
@@ -116,48 +103,62 @@
     <button onclick="gerarCodigo()">Gerar Carteirinha</button>
   </div>
 
-  <div class="flip-card" id="card">
-    <div class="flip-card-inner">
-      <div class="card-face card-front">
-        <div class="id" id="id-texto">04</div>
-        <div class="name" id="nome-texto">Nome Sobrenome</div>
-        <div class="codigo" id="codigo-texto">12345678901</div>
-      </div>
-      <div class="card-face card-back"></div>
+  <div class="card-container">
+    <div class="card front" id="card-frente">
+      <div class="id" id="id-texto">04</div>
+      <div class="name" id="nome-texto">Nome Sobrenome</div>
+      <div class="codigo" id="codigo-texto">12345678901</div>
+    </div>
+    <div class="card back" id="card-verso">
+      <!-- O verso é apenas uma imagem de fundo, não precisa de conteúdo adicional -->
     </div>
   </div>
 
-  <button onclick="baixarImagem()">Baixar Frente + Verso</button>
+  <div>
+    <button onclick="baixarPDF('frente')">Baixar Frente (PDF)</button>
+    <button onclick="baixarPDF('verso')">Baixar Verso (PDF)</button>
+    <button onclick="baixarPDF('ambos')">Baixar Frente + Verso (PDF)</button>
+  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
     function gerarCodigo() {
       const nome = document.getElementById("nome").value || "Nome Sobrenome";
       const idNumero = document.getElementById("id-numero").value || "00";
       const codigo = Math.floor(10000000000 + Math.random() * 90000000000);
 
-      // Atualiza o conteúdo na frente da carteirinha
       document.getElementById("nome-texto").innerText = nome;
       document.getElementById("id-texto").innerText = idNumero;
       document.getElementById("codigo-texto").innerText = codigo;
     }
 
-    function baixarImagem() {
-      const cardElement = document.querySelector('.flip-card');
-      
-      // Usando html2canvas para capturar a imagem da carta
-      html2canvas(cardElement, {
-        logging: true,
-        backgroundColor: "#121212",
-        useCORS: true
-      }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'carteirinha_EXOL.png'; // Nome do arquivo
-        link.href = canvas.toDataURL("image/png"); // Cria o arquivo para download
-        link.click(); // Dispara o clique para o download
-      }).catch(error => {
-        console.error("Erro ao gerar a imagem:", error);
-      });
+    async function baixarPDF(tipo) {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [500, 300] });
+      const scale = 4; // Melhorar a qualidade das imagens capturadas
+
+      // Define as áreas que serão capturadas
+      const frente = document.getElementById('card-frente');
+      const verso = document.getElementById('card-verso');
+
+      // Captura da frente
+      if (tipo === 'frente' || tipo === 'ambos') {
+        const canvasFrente = await html2canvas(frente, { scale: scale });
+        const imgDataFrente = canvasFrente.toDataURL("image/png");
+        pdf.addImage(imgDataFrente, 'PNG', 0, 0, 500, 300);
+      }
+
+      // Captura do verso
+      if (tipo === 'verso' || tipo === 'ambos') {
+        const canvasVerso = await html2canvas(verso, { scale: scale });
+        const imgDataVerso = canvasVerso.toDataURL("image/png");
+        if (tipo === 'ambos') {
+          pdf.addPage(); // Adiciona uma nova página para o verso
+        }
+        pdf.addImage(imgDataVerso, 'PNG', 0, 0, 500, 300); // Mesmo tamanho para o verso
+      }
+
+      // Salvar o PDF
+      pdf.save('carteirinha_EXOL.pdf');
     }
   </script>
 </body>
