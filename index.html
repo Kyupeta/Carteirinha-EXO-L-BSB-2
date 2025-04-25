@@ -130,12 +130,12 @@
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
-        format: [171.20, 53.98]  // Largura total das duas carteirinhas (85.60mm + 85.60mm)
+        format: [171.2, 53.98]  // Largura total das duas carteirinhas (85.60mm + 85.60mm)
       });
 
       // Captura da frente com maior qualidade
       const frenteCanvas = await html2canvas(document.getElementById('card-frente'), {
-        scale: 4,
+        scale: 4, // Aumenta a qualidade da imagem
         useCORS: true,
         logging: false
       });
@@ -144,9 +144,16 @@
 
       // Captura do verso com maior qualidade
       const versoCanvas = await html2canvas(document.getElementById('card-verso'), {
-        scale: 4,
+        scale: 4, // Aumenta a qualidade da imagem
         useCORS: true,
         logging: false
       });
       const imgVerso = versoCanvas.toDataURL('image/png', 1.0); // Usa PNG com qualidade máxima
-      pdf.addImage(imgVerso, 'PNG', 85.60, 0, 85.60, 53.
+      pdf.addImage(imgVerso, 'PNG', 85.60, 0, 85.60, 53.98);  // Lado direito da página
+
+      // Salva o PDF com ambas as imagens lado a lado
+      pdf.save('carteirinha_EXOL.pdf');
+    }
+  </script>
+</body>
+</html>
