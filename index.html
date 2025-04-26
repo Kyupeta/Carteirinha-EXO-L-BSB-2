@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Carteirinha EXO-L</title>
+  <title>Carteirinha EXO-L Premium</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -44,291 +44,241 @@
       transform: rotateY(180deg);
     }
 
-    .flipped .card-front {
-      transform: rotateY(180deg);
+    /* Garantia de alta qualidade e tamanho igual */
+    .card-back, .card-front {
+      background-size: 100% 100%;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
     }
 
-    .flipped .card-back {
-      transform: rotateY(0deg);
-    }
-
-    .input-group {
-      margin-bottom: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    input, select {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: none;
-      min-width: 200px;
-    }
-
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border: none;
-      border-radius: 5px;
-      background-color: #00bcd4;
-      color: white;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #0097a7;
-    }
-
-    .buttons-group {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
-
-    /* Novos estilos baseados no modelo */
+    /* Estilos para os textos na frente */
     .exol-id {
       position: absolute;
-      top: 45px;
-      left: 100px;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
       color: white;
       font-size: 18px;
       letter-spacing: 1px;
-    }
-
-    .member-name {
-      position: absolute;
-      top: 155px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: white;
-      font-weight: bold;
-      font-size: 22px;
-      text-align: center;
-      max-width: 80%;
-      text-transform: uppercase;
-    }
-
-    .member-birth {
-      position: absolute;
-      top: 185px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: white;
-      font-size: 16px;
-      text-align: center;
-    }
-
-    .exol-number {
-      position: absolute;
-      bottom: 50px;
-      left: 225px;
-      font-size: 16px;
-      color: black;
-      font-family: 'Courier New', monospace;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     }
 
     .we-are-one {
       position: absolute;
-      top: 120px;
+      top: 45%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .exo-equation {
+      position: absolute;
+      top: 52%;
       left: 50%;
       transform: translateX(-50%);
       color: white;
       font-size: 14px;
-      text-align: center;
       font-style: italic;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     }
 
-    .flip-btn {
+    .member-name {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background-color: rgba(0,0,0,0.5);
-      z-index: 3;
-      padding: 5px 10px;
-      font-size: 12px;
+      top: 65%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+    }
+
+    .exol-number {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 16px;
+      font-family: 'Courier New', monospace;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    /* Controles */
+    .controls {
+      margin: 20px auto;
+      max-width: 500px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background: #00bcd4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: #0097a7;
+      transform: translateY(-2px);
+    }
+
+    select, input {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+
+    .quality-options {
+      margin: 15px 0;
+      padding: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 5px;
     }
 
     @media (max-width: 600px) {
       .card-container {
-        width: 90%;
-        height: 0;
-        padding-bottom: 56.2%;
-      }
-      
-      .input-group, .buttons-group {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      input, select, button {
         width: 100%;
-        max-width: 300px;
+        height: 0;
+        padding-bottom: 62%; /* Proporção 500x310 */
       }
     }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
-  <h1>Gerador de Carteirinha EXO-L</h1>
+  <h1>Gerador de Carteirinha EXO-L Premium</h1>
 
-  <div class="input-group">
-    <input type="text" id="nome" placeholder="Nome do Membro (ex: XIUMIN)" required />
-    <input type="date" id="nascimento" placeholder="Data de Nascimento" required />
-    <input type="number" id="id-numero" placeholder="Número ID (ex: 2)" min="1" required />
-    <button onclick="gerarCarteirinha()">Gerar Carteirinha</button>
+  <div class="controls">
+    <input type="text" id="memberName" placeholder="Nome do Membro" value="XIUMIN">
+    <input type="number" id="memberId" placeholder="Número ID" value="2" min="1">
+    <button onclick="updateCard()">Atualizar Carteirinha</button>
   </div>
 
-  <div class="card-container" id="card-container">
-    <div class="card-face card-front" id="frente">
-      <div class="exol-id" id="id-texto">EXOL-0000-0000-0002</div>
-      <div class="we-are-one">WE ARE ONE<br>EXO-K + EXO-L + EXO-M = ONE</div>
-      <div class="member-name" id="nome-texto">XIUMIN</div>
-      <div class="member-birth" id="nascimento-texto">19900326</div>
-      <div class="exol-number" id="codigo-texto">EXOL00000000002</div>
-      <button class="flip-btn" onclick="flipCard()">Virar Carteirinha</button>
-    </div>
-    <div class="card-face card-back" id="verso">
-      <button class="flip-btn" onclick="flipCard()">Virar Carteirinha</button>
-    </div>
+  <div class="quality-options">
+    <label>Qualidade de Exportação:</label>
+    <select id="exportQuality">
+      <option value="2">Alta (2x)</option>
+      <option value="3" selected>Premium (3x)</option>
+      <option value="4">Ultra (4x)</option>
+    </select>
   </div>
 
-  <div class="buttons-group">
-    <button onclick="baixarPDF('frente')">Baixar Frente (PDF)</button>
-    <button onclick="baixarPDF('verso')">Baixar Verso (PDF)</button>
-    <button onclick="baixarPDF('ambos')">Baixar Frente + Verso (PDF)</button>
-    <button onclick="baixarImagem('frente')">Baixar Frente (PNG)</button>
+  <div class="card-container" id="cardContainer">
+    <div class="card-face card-front" id="frontCard">
+      <div class="exol-id" id="idText">EXOL-0000-0000-0002</div>
+      <div class="we-are-one">WE ARE ONE</div>
+      <div class="exo-equation">EXO-K+EXO-L+EXO-M=ONE</div>
+      <div class="member-name" id="nameText">XIUMIN</div>
+      <div class="exol-number" id="numberText">EXOL00000000002</div>
+    </div>
+    <div class="card-face card-back" id="backCard"></div>
+  </div>
+
+  <div class="controls">
+    <button onclick="flipCard()">Virar Carteirinha</button>
+    <button onclick="exportImage('front')">Baixar Frente (PNG)</button>
+    <button onclick="exportImage('back')">Baixar Verso (PNG)</button>
+    <button onclick="exportPDF()">Baixar PDF Completo</button>
   </div>
 
   <script>
-    function formatarData(inputDate) {
-      if (!inputDate) return '';
-      const date = new Date(inputDate);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}${month}${day}`;
-    }
+    // Configuração de alta qualidade
+    const HIGH_DPI = true;
+    const DEFAULT_SCALE = 3;
 
-    function formatarID(id) {
-      return `EXOL-0000-0000-${String(id).padStart(4, '0')}`;
-    }
-
-    function formatarCodigo(id) {
-      return `EXOL${String(id).padStart(11, '0')}`;
-    }
-
-    function gerarCarteirinha() {
-      const nome = document.getElementById("nome").value;
-      const nascimento = document.getElementById("nascimento").value;
-      const idNumero = document.getElementById("id-numero").value;
+    // Atualiza os dados da carteirinha
+    function updateCard() {
+      const name = document.getElementById('memberName').value || 'EXO-L';
+      const id = document.getElementById('memberId').value || '1';
       
-      if (!nome || !nascimento || !idNumero) {
-        alert("Por favor, preencha todos os campos!");
-        return;
-      }
-      
-      document.getElementById("nome-texto").innerText = nome.toUpperCase();
-      document.getElementById("nascimento-texto").innerText = formatarData(nascimento);
-      document.getElementById("id-texto").innerText = formatarID(idNumero);
-      document.getElementById("codigo-texto").innerText = formatarCodigo(idNumero);
+      document.getElementById('nameText').textContent = name.toUpperCase();
+      document.getElementById('idText').textContent = `EXOL-0000-0000-${String(id).padStart(4, '0')}`;
+      document.getElementById('numberText').textContent = `EXOL${String(id).padStart(11, '0')}`;
     }
 
+    // Vira a carteirinha
     function flipCard() {
-      document.getElementById('card-container').classList.toggle('flipped');
+      document.getElementById('cardContainer').classList.toggle('flipped');
     }
 
-    async function baixarPDF(tipo) {
-      const { jsPDF } = window.jspdf;
-      const scaleFactor = 3;
-      const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [500, 310] });
-
-      const frente = document.getElementById('frente');
-      const verso = document.getElementById('verso');
-      const container = document.getElementById('card-container');
-
-      container.classList.remove('flipped');
+    // Exporta como imagem PNG
+    async function exportImage(side) {
+      const quality = parseInt(document.getElementById('exportQuality').value) || DEFAULT_SCALE;
+      const card = side === 'front' ? document.getElementById('frontCard') : document.getElementById('backCard');
       
-      if (tipo === 'frente' || tipo === 'ambos') {
-        frente.style.display = 'block';
-        verso.style.display = 'none';
-
-        await new Promise(resolve => setTimeout(resolve, 200));
-
-        const canvasFrente = await html2canvas(frente, { 
-          scale: scaleFactor,
-          useCORS: true,
-          logging: false,
-          allowTaint: true
-        });
-        
-        const imgFrente = canvasFrente.toDataURL("image/png");
-        pdf.addImage(imgFrente, 'PNG', 0, 0, 500, 310);
-
-        if (tipo === 'ambos') pdf.addPage();
-      }
-
-      if (tipo === 'verso' || tipo === 'ambos') {
-        frente.style.display = 'none';
-        verso.style.display = 'block';
-
-        await new Promise(resolve => setTimeout(resolve, 200));
-
-        const canvasVerso = await html2canvas(verso, { 
-          scale: scaleFactor,
-          useCORS: true,
-          logging: false,
-          allowTaint: true
-        });
-        
-        const imgVerso = canvasVerso.toDataURL("image/png");
-        pdf.addImage(imgVerso, 'PNG', 0, 0, 500, 310);
-      }
-
-      frente.style.display = 'block';
-      verso.style.display = 'block';
-      
-      pdf.save(`EXOL_${document.getElementById("nome-texto").innerText || 'MEMBER'}.pdf`);
-    }
-
-    async function baixarImagem(tipo) {
-      const scaleFactor = 2;
-      let elemento;
-      
-      if (tipo === 'frente') {
-        elemento = document.getElementById('frente');
-      } else {
-        elemento = document.getElementById('verso');
-      }
-      
-      const flipBtns = elemento.querySelectorAll('.flip-btn');
-      flipBtns.forEach(btn => btn.style.display = 'none');
-      
-      const canvas = await html2canvas(elemento, { 
-        scale: scaleFactor,
+      // Configurações para alta qualidade
+      const options = {
+        scale: quality,
         useCORS: true,
-        logging: false
-      });
-      
-      flipBtns.forEach(btn => btn.style.display = 'block');
-      
+        allowTaint: true,
+        logging: false,
+        backgroundColor: null,
+        removeContainer: true,
+        windowWidth: card.scrollWidth * quality,
+        windowHeight: card.scrollHeight * quality
+      };
+
+      // Mostrar mensagem para grandes exportações
+      if (quality > 3) {
+        if (!confirm(`Exportação em qualidade ULTRA (${quality}x) pode demorar. Continuar?`)) return;
+      }
+
+      // Criar canvas
+      const canvas = await html2canvas(card, options);
       const link = document.createElement('a');
-      link.download = `EXOL_${document.getElementById("nome-texto").innerText || 'MEMBER'}_${tipo}.png`;
-      link.href = canvas.toDataURL("image/png");
+      link.download = `EXOL_${side}_${document.getElementById('nameText').textContent}.png`;
+      link.href = canvas.toDataURL('image/png', 1.0);
       link.click();
     }
 
+    // Exporta como PDF
+    async function exportPDF() {
+      const { jsPDF } = window.jspdf;
+      const quality = parseInt(document.getElementById('exportQuality').value) || DEFAULT_SCALE;
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [500, 310]
+      });
+
+      // Configurações comuns
+      const options = {
+        scale: quality,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: null
+      };
+
+      // Frente
+      const frontCanvas = await html2canvas(document.getElementById('frontCard'), options);
+      pdf.addImage(frontCanvas, 'PNG', 0, 0, 500, 310);
+
+      // Verso
+      pdf.addPage();
+      const backCanvas = await html2canvas(document.getElementById('backCard'), options);
+      pdf.addImage(backCanvas, 'PNG', 0, 0, 500, 310);
+
+      // Salvar
+      pdf.save(`Carteirinha_EXOL_${document.getElementById('nameText').textContent}.pdf`);
+    }
+
     // Inicialização
-    window.onload = function() {
-      document.getElementById("nascimento").valueAsDate = new Date();
-      gerarCarteirinha();
-    };
+    updateCard();
   </script>
 </body>
 </html>
