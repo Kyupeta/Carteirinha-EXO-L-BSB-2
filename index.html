@@ -5,7 +5,7 @@
   <title>Carteirinha EXO-L</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       background: #121212;
       color: white;
       text-align: center;
@@ -60,7 +60,7 @@
       gap: 10px;
     }
 
-    input {
+    input, select {
       padding: 10px;
       font-size: 16px;
       border-radius: 5px;
@@ -91,18 +91,19 @@
       margin-top: 20px;
     }
 
-    .id {
+    /* Novos estilos baseados no modelo */
+    .exol-id {
       position: absolute;
-      top: 48px;
+      top: 45px;
       left: 100px;
       color: white;
-      font-weight: light;
       font-size: 18px;
+      letter-spacing: 1px;
     }
 
-    .name {
+    .member-name {
       position: absolute;
-      top: 157px;
+      top: 155px;
       left: 50%;
       transform: translateX(-50%);
       color: white;
@@ -110,17 +111,37 @@
       font-size: 22px;
       text-align: center;
       max-width: 80%;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      text-transform: uppercase;
     }
 
-    .codigo {
+    .member-birth {
       position: absolute;
-      bottom: 49px;
-      left: 225px; 
+      top: 185px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .exol-number {
+      position: absolute;
+      bottom: 50px;
+      left: 225px;
       font-size: 16px;
       color: black;
-      font-weight: light;
+      font-family: 'Courier New', monospace;
+    }
+
+    .we-are-one {
+      position: absolute;
+      top: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 14px;
+      text-align: center;
+      font-style: italic;
     }
 
     .flip-btn {
@@ -129,13 +150,15 @@
       right: 10px;
       background-color: rgba(0,0,0,0.5);
       z-index: 3;
+      padding: 5px 10px;
+      font-size: 12px;
     }
 
     @media (max-width: 600px) {
       .card-container {
         width: 90%;
         height: 0;
-        padding-bottom: 56.2%; /* Proporção da carteirinha */
+        padding-bottom: 56.2%;
       }
       
       .input-group, .buttons-group {
@@ -143,7 +166,7 @@
         align-items: center;
       }
       
-      input, button {
+      input, select, button {
         width: 100%;
         max-width: 300px;
       }
@@ -156,16 +179,19 @@
   <h1>Gerador de Carteirinha EXO-L</h1>
 
   <div class="input-group">
-    <input type="text" id="nome" placeholder="Digite o nome" required />
-    <input type="number" id="id-numero" placeholder="ID (apenas número)" required />
+    <input type="text" id="nome" placeholder="Nome do Membro (ex: XIUMIN)" required />
+    <input type="date" id="nascimento" placeholder="Data de Nascimento" required />
+    <input type="number" id="id-numero" placeholder="Número ID (ex: 2)" min="1" required />
     <button onclick="gerarCarteirinha()">Gerar Carteirinha</button>
   </div>
 
   <div class="card-container" id="card-container">
     <div class="card-face card-front" id="frente">
-      <div class="id" id="id-texto">ID</div>
-      <div class="name" id="nome-texto">Nome Sobrenome</div>
-      <div class="codigo" id="codigo-texto">XXXXXXXXXXX</div>
+      <div class="exol-id" id="id-texto">EXOL-0000-0000-0002</div>
+      <div class="we-are-one">WE ARE ONE<br>EXO-K + EXO-L + EXO-M = ONE</div>
+      <div class="member-name" id="nome-texto">XIUMIN</div>
+      <div class="member-birth" id="nascimento-texto">19900326</div>
+      <div class="exol-number" id="codigo-texto">EXOL00000000002</div>
       <button class="flip-btn" onclick="flipCard()">Virar Carteirinha</button>
     </div>
     <div class="card-face card-back" id="verso">
@@ -181,31 +207,37 @@
   </div>
 
   <script>
-    // Gerar código aleatório ao carregar a página
-    window.onload = function() {
-      gerarCodigoAleatorio();
-    };
+    function formatarData(inputDate) {
+      if (!inputDate) return '';
+      const date = new Date(inputDate);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}${month}${day}`;
+    }
 
-    function gerarCodigoAleatorio() {
-      const codigo = Math.floor(10000000000 + Math.random() * 90000000000);
-      document.getElementById("codigo-texto").innerText = codigo;
-      return codigo;
+    function formatarID(id) {
+      return `EXOL-0000-0000-${String(id).padStart(4, '0')}`;
+    }
+
+    function formatarCodigo(id) {
+      return `EXOL${String(id).padStart(11, '0')}`;
     }
 
     function gerarCarteirinha() {
       const nome = document.getElementById("nome").value;
+      const nascimento = document.getElementById("nascimento").value;
       const idNumero = document.getElementById("id-numero").value;
       
-      if (!nome || !idNumero) {
+      if (!nome || !nascimento || !idNumero) {
         alert("Por favor, preencha todos os campos!");
         return;
       }
       
-      const codigo = gerarCodigoAleatorio();
-      
       document.getElementById("nome-texto").innerText = nome.toUpperCase();
-      document.getElementById("id-texto").innerText = idNumero.padStart(2, '0');
-      document.getElementById("codigo-texto").innerText = codigo;
+      document.getElementById("nascimento-texto").innerText = formatarData(nascimento);
+      document.getElementById("id-texto").innerText = formatarID(idNumero);
+      document.getElementById("codigo-texto").innerText = formatarCodigo(idNumero);
     }
 
     function flipCard() {
@@ -214,14 +246,13 @@
 
     async function baixarPDF(tipo) {
       const { jsPDF } = window.jspdf;
-      const scaleFactor = 3; // Reduzido para melhor performance
+      const scaleFactor = 3;
       const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [500, 310] });
 
       const frente = document.getElementById('frente');
       const verso = document.getElementById('verso');
       const container = document.getElementById('card-container');
 
-      // Remove a animação de flip durante a captura
       container.classList.remove('flipped');
       
       if (tipo === 'frente' || tipo === 'ambos') {
@@ -260,11 +291,10 @@
         pdf.addImage(imgVerso, 'PNG', 0, 0, 500, 310);
       }
 
-      // Restaura a visualização normal
       frente.style.display = 'block';
       verso.style.display = 'block';
       
-      pdf.save(`Carteirinha_EXOL_${document.getElementById("nome-texto").innerText || 'EXO-L'}.pdf`);
+      pdf.save(`EXOL_${document.getElementById("nome-texto").innerText || 'MEMBER'}.pdf`);
     }
 
     async function baixarImagem(tipo) {
@@ -277,7 +307,6 @@
         elemento = document.getElementById('verso');
       }
       
-      // Esconde o botão de flip temporariamente
       const flipBtns = elemento.querySelectorAll('.flip-btn');
       flipBtns.forEach(btn => btn.style.display = 'none');
       
@@ -287,14 +316,19 @@
         logging: false
       });
       
-      // Restaura o botão de flip
       flipBtns.forEach(btn => btn.style.display = 'block');
       
       const link = document.createElement('a');
-      link.download = `Carteirinha_EXOL_${tipo}_${document.getElementById("nome-texto").innerText || 'EXO-L'}.png`;
+      link.download = `EXOL_${document.getElementById("nome-texto").innerText || 'MEMBER'}_${tipo}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     }
+
+    // Inicialização
+    window.onload = function() {
+      document.getElementById("nascimento").valueAsDate = new Date();
+      gerarCarteirinha();
+    };
   </script>
 </body>
 </html>
