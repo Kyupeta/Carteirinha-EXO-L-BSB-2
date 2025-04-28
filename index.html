@@ -124,7 +124,7 @@
 
     .codigo {
       position: absolute;
-      bottom: 490px;
+      bottom: 49px;
       left: 225px;
       font-size: 14px;
       color: black;
@@ -194,18 +194,14 @@
   </div>
 
   <div class="action-buttons">
-    <button onclick="baixarPDF('frente')">Baixar Frente (PDF)</button>
-    <button onclick="baixarPDF('verso')">Baixar Verso (PDF)</button>
-    <button onclick="baixarPDF('ambos')">Baixar Completo (PDF)</button>
-    <button onclick="baixarImagem('frente')">Baixar Frente (PNG)</button>
-    <button onclick="baixarImagem('verso')">Baixar Verso (PNG)</button>
+    <button onclick="baixarPDF()">Baixar Frente e Verso (PDF)</button>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
-    const QUALITY = 4;
+    const QUALITY = 5; // aumentei para qualidade 5
 
     window.onload = function() {
       gerarCarteirinha();
@@ -250,7 +246,7 @@
       return canvas;
     }
 
-    async function baixarPDF(tipo) {
+    async function baixarPDF() {
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({
         orientation: 'landscape',
@@ -263,6 +259,16 @@
       const wrapper = document.getElementById('card-wrapper');
       wrapper.classList.remove('flipped');
 
-      if (tipo === 'frente' || tipo === 'ambos') {
-        const canvasFrente = await captureCard(frente, QUALITY);
-        pdf.addImage(canvasFrente, 'PNG', 0, 0, 500, 310
+      const canvasFrente = await captureCard(frente, QUALITY);
+      pdf.addImage(canvasFrente, 'PNG', 0, 0, 500, 310);
+
+      pdf.addPage();
+      const canvasVerso = await captureCard(verso, QUALITY);
+      pdf.addImage(canvasVerso, 'PNG', 0, 0, 500, 310);
+
+      pdf.save('carteirinha-exol.pdf');
+    }
+  </script>
+
+</body>
+</html>
