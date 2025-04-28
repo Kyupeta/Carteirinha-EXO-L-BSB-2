@@ -264,3 +264,16 @@
       if (tipo === 'verso' || tipo === 'ambos') {
         const canvasVerso = await captureCard(verso, QUALITY);
         pdf.addImage(canvasVerso, 'PNG', 
+
+                     <script>
+  function gerarImagem() {
+    const cardFrente = document.getElementById('card-frente');
+    html2canvas(cardFrente, { scale: 4 }).then(function(canvas) {
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = 'Carteirinha_EXO-L.png';
+      link.click();
+    });
+  }
+</script>
+
