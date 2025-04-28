@@ -91,13 +91,12 @@
       transform: rotateY(180deg);
     }
 
-    /* Ajustes finos de posicionamento */
     .id {
       position: absolute;
-      top: 40px;  /* Ajustado para baixo */
-      left: 98px;
+      top: 36px;
+      left: 85px;
       color: white;
-      font-size: 12px;  /* Reduzido */
+      font-size: 12px;
       font-weight: normal;
     }
 
@@ -117,8 +116,8 @@
 
     .codigo {
       position: absolute;
-      bottom: 65px;  /* Ajustado para cima */
-      left: 225px;
+      bottom: 62px;
+      left: 218px;
       font-size: 14px;
       color: black;
       font-family: 'Courier New', monospace;
@@ -148,20 +147,16 @@
       .card-wrapper {
         width: 100%;
         height: 0;
-        padding-bottom: 62%; /* Proporção 500x310 */
+        padding-bottom: 62%;
       }
       
-      input {
+      input, button {
         width: 90%;
       }
       
       .action-buttons {
         flex-direction: column;
         align-items: center;
-      }
-      
-      button {
-        width: 90%;
       }
     }
   </style>
@@ -202,10 +197,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
-    // Configurações de qualidade
-    const QUALITY = 4; // 4x de resolução (alta qualidade)
-    
-    // Gera automaticamente ao carregar
+    const QUALITY = 4;
+
     window.onload = function() {
       gerarCarteirinha();
     };
@@ -217,29 +210,36 @@
     function gerarCarteirinha() {
       const nome = document.getElementById("nome").value || "EXO-L";
       const idNumero = document.getElementById("id-numero").value || "1";
-      
-      // Formata o ID para 2 dígitos
       const idFormatado = String(idNumero).padStart(2, '0');
-      
-      // Gera código aleatório de 11 dígitos
       const codigo = Math.floor(10000000000 + Math.random() * 90000000000);
       
-      // Atualiza os elementos na carteirinha
       document.getElementById("nome-texto").textContent = nome.toUpperCase();
       document.getElementById("id-texto").textContent = idFormatado;
       document.getElementById("codigo-texto").textContent = codigo;
     }
 
     async function captureCard(element, scale) {
-      return await html2canvas(element, {
+      const otherSide = element.id === 'card-frente' 
+        ? document.getElementById('card-verso') 
+        : document.getElementById('card-frente');
+
+      otherSide.style.display = 'none';
+      element.style.display = 'block';
+
+      const canvas = await html2canvas(element, {
         scale: scale,
         useCORS: true,
         logging: false,
         allowTaint: true,
         backgroundColor: null,
-        windowWidth: element.offsetWidth * scale,
-        windowHeight: element.offsetHeight * scale
+        width: 500,
+        height: 310
       });
+
+      otherSide.style.display = '';
+      element.style.display = '';
+
+      return canvas;
     }
 
     async function baixarPDF(tipo) {
@@ -253,8 +253,6 @@
       const frente = document.getElementById('card-frente');
       const verso = document.getElementById('card-verso');
       const wrapper = document.getElementById('card-wrapper');
-
-      // Remove temporariamente a animação de flip
       wrapper.classList.remove('flipped');
 
       if (tipo === 'frente' || tipo === 'ambos') {
@@ -265,34 +263,4 @@
 
       if (tipo === 'verso' || tipo === 'ambos') {
         const canvasVerso = await captureCard(verso, QUALITY);
-        pdf.addImage(canvasVerso, 'PNG', 0, 0, 500, 310);
-      }
-
-      // Nome do arquivo com o nome do membro
-      const nomeMembro = document.getElementById("nome-texto").textContent || 'EXOL';
-      pdf.save(`Carteirinha_EXOL_${nomeMembro}.pdf`);
-    }
-
-    async function baixarImagem(tipo) {
-      const elemento = tipo === 'frente' 
-        ? document.getElementById('card-frente') 
-        : document.getElementById('card-verso');
-      
-      // Esconde o botão de flip temporariamente
-      const flipBtn = elemento.querySelector('.flip-btn');
-      if (flipBtn) flipBtn.style.display = 'none';
-      
-      const canvas = await captureCard(elemento, QUALITY);
-      
-      // Restaura o botão de flip
-      if (flipBtn) flipBtn.style.display = 'block';
-      
-      const link = document.createElement('a');
-      const nomeMembro = document.getElementById("nome-texto").textContent || 'EXOL';
-      link.download = `EXOL_${tipo}_${nomeMembro}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    }
-  </script>
-</body>
-</html>
+        pdf.addImage(canvasVerso, 'PNG', 
